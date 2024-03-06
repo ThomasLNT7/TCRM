@@ -6,14 +6,33 @@
 
 {% if user.is_authenticated %}
 
-    <h1>Hello World</h1>
+    <h1>Clients :</h1>
+    {% if records %}
+        {%for record in records%}
+
+        <div class="accordion" id="accordionExample{{ loop.index }}">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ record.id }}">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ record.id }}" aria-expanded="true" aria-controls="collapse{{ record.id }}">
+                {{record}}
+              </button>
+            </h2>
+            <div id="collapse{{ record.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ record.id }}" data-bs-parent="#accordionExample{{ loop.index }}">
+              <div class="accordion-body">
+                Adresse postale : {{record.adresse}} {{record.cp}} {{record.ville}} <br/> Contact mail : {{record.email}} <br/>Contact téléphone : {{record.telephone}}<br/>
+              </div>
+            </div>
+          </div>
+        </div>
+        {%endfor%}
+
+    {%endif%}
 
 {% else %}
     <h1>Login</h1>
     <br/>
     <form method="POST" action="{% url 'home'%}">
         {% csrf_token %}
-    <form>
   <div class="mb-3">
     <input type="text" class="form-control" id="idLogin" name="username" placeholder="Identifiant" required>
   </div>
@@ -23,7 +42,6 @@
   </div>
   <br/>
   <button type="submit" class="btn btn-primary">Login</button>
-</form>
 </form>
 </div>
 
