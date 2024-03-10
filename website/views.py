@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.views.generic import ListView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm
@@ -7,16 +8,14 @@ from .models import Record
 
 # Create your views here.
 def home(request):
-
     records = Record.objects.all()
 
-
-    #check login
+    # check login
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
 
-        #authentification
+        # authentification
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -26,12 +25,14 @@ def home(request):
             messages.success(request, "Il y a eu une erreur, reconnectez vous :x !")
             return redirect('home')
     else:
-        return render(request, "home.html", {'records':records})
+        return render(request, "home.html", {'records': records})
+
 
 def logout_user(request):
     logout(request)
     messages.success(request, "Vous vous êtes bien déconnecté")
     return redirect('home')
+
 
 def register_user(request):
     if request.method == "POST":
@@ -44,8 +45,16 @@ def register_user(request):
             login(request, user)
             messages.success(request, "Vous êtes bien enregistré !")
             return redirect('home')
-    else :
+    else:
         form = SignUpForm()
-        return render(request, "register.html", {'form':form})
+        return render(request, "register.html", {'form': form})
 
     return render(request, "register.html", {'form': form})
+
+def search_bar(request):
+    if request.method == "POST":
+        searched = request.POST["searched"]
+
+        return render(request, "search_result.html", {"searched": searched})
+    else:
+        return render(request, "search_result.html", {})
